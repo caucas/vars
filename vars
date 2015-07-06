@@ -1,0 +1,41 @@
+#!/bin/bash
+PATH=~/.vars_variables
+declare -A VARIABLES_MAP
+source $PATH
+
+SUCCESS=0
+E_NOARGS=65
+
+if [ -z "$1" ]
+then
+    echo "USAGE: `basename $0` set KEY VALUE"
+    echo "USAGE: `basename $0` get KEY"
+    exit $E_NOARGS
+fi
+
+case "$1" in
+    set)
+        if [ -z "$2" ] || [ -z "$3" ]
+        then
+            echo "USAGE: `basename $0` set KEY VALUE"
+            exit $E_NOARGS
+        else
+            VARIABLES_MAP[$2]=$3
+            declare -p VARIABLES_MAP > $PATH
+        fi
+        ;;
+    get)
+        if [ -z "$2" ]
+        then
+            echo "USAGE: `basename $0` get KEY"
+            exit $E_NOARGS
+        else
+            echo ${VARIABLES_MAP[$2]}
+        fi
+        ;;
+    list)
+        for K in "${!VARIABLES_MAP[@]}";
+        do echo -e $K ' \t ' ${VARIABLES_MAP[$K]}; 
+        done
+        ;;
+esac
